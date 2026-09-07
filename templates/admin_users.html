@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold mb-0">Admin • Users</h3>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-primary" href="{{ url_for('admin_history') }}">View All History</a>
+      <a class="btn btn-primary" href="{{ url_for('dashboard') }}">Dashboard</a>
+    </div>
+  </div>
+
+  <p class="text-muted small mb-3">
+    Admin access is controlled by <span class="mono">ADMIN_EMAILS</span> env at registration (comma-separated).
+    You can also toggle admin for other users here.
+  </p>
+
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Admin</th>
+          <th>Predictions</th>
+          <th>Created</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td class="mono">{{ u["id"] }}</td>
+          <td>{{ u["name"] }}</td>
+          <td class="mono">{{ u["email"] }}</td>
+          <td>
+            {% if u["is_admin"] == 1 %}
+              <span class="badge text-bg-success">Yes</span>
+            {% else %}
+              <span class="badge text-bg-secondary">No</span>
+            {% endif %}
+          </td>
+          <td class="mono">{{ u["predictions"] }}</td>
+          <td class="small text-muted">{{ u["created_at"] }}</td>
+          <td class="text-end">
+            <form method="post" action="{{ url_for('admin_toggle', uid=u['id']) }}" onsubmit="return confirm('Toggle admin for this user?');">
+              <button class="btn btn-sm btn-outline-dark" type="submit">Toggle Admin</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

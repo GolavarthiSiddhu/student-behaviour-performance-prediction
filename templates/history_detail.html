@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card p-4">
+      <h4 class="fw-bold mb-3">Prediction Result</h4>
+      <div class="mb-2">
+        <span class="badge text-bg-primary">Behaviour</span>
+        <span class="ms-2 fw-semibold">{{ row["behavior_label"] }}</span>
+      </div>
+      <div class="mb-2">
+        <span class="badge text-bg-success">Final Score</span>
+        <span class="ms-2 fw-semibold">{{ row["final_score_pred"] }} / 100</span>
+      </div>
+      <div class="mb-2">
+        <span class="badge text-bg-dark">Performance</span>
+        <span class="ms-2 fw-semibold">{{ row["performance_label"] }}</span>
+      </div>
+
+      <hr>
+      <div class="small text-muted">Created: {{ row["created_at"] }}</div>
+
+      <div class="mt-3 d-flex gap-2">
+        <a class="btn btn-outline-primary w-100" href="{{ url_for('history') }}">Back</a>
+        <form method="post" action="{{ url_for('history_delete', hid=row['id']) }}" class="w-100" onsubmit="return confirm('Delete this record?');">
+          <button class="btn btn-outline-danger w-100" type="submit">Delete</button>
+        </form>
+        <a class="btn btn-primary w-100" href="{{ url_for('dashboard') }}">New</a>
+      </div>
+    </div>
+
+    <div class="card p-4 mt-4">
+      <h6 class="fw-bold">Behaviour Probabilities</h6>
+      {% if probs %}
+        <ul class="list-group">
+          {% for k,v in probs.items() %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span>{{ k }}</span>
+              <span class="mono">{{ "%.4f"|format(v) }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted small mb-0">No probabilities available.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card p-4">
+      <h4 class="fw-bold mb-3">Input Features</h4>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr><th>Feature</th><th>Value</th></tr>
+          </thead>
+          <tbody>
+            {% for k,v in features.items() %}
+              <tr>
+                <td class="mono">{{ k }}</td>
+                <td class="mono">{{ v }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
